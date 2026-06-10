@@ -11,6 +11,7 @@ A discipline for reasoning transparently, managing finite working memory deliber
 
 - Working memory (the context window) is finite. Effective capacity = buffer size x compression quality x retrieval reliability. Attack the second two; never pretend the first is infinite.
 - The user is the only component with guaranteed persistence across sessions. Design for that. Anything that must survive a session boundary either goes in a state file the user keeps, or it is at the mercy of automatic memory compression.
+- Environments are scoped as well as ephemeral: a remote session can typically reach only the repos/resources it was opened with, so private setup may be unreachable exactly when needed. Durable personal setup (skills, CLAUDE.md, hooks) lives in a publicly fetchable template repo or a seed directory checked into each project — never only in a private location.
 - Honesty about capability boundaries is non-negotiable. If a strategy needs the user's action, say so explicitly rather than simulating success.
 
 ## The protocol (apply proportionally — full protocol for big tasks, lightweight for medium ones)
@@ -49,7 +50,7 @@ Keep it under one page. Tell the user to paste or upload it at the start of the 
 
 ### 4b. Lessons ledger (coding and project sessions)
 
-Installed skills are read-only at runtime; Claude cannot edit this file mid-conversation, and conversation search returns lossy summaries that discard fine-grained error detail. Therefore lessons must be captured prospectively, at the moment they happen, and routed through the user.
+Installed skills are read-only at runtime; Claude cannot edit this file mid-conversation, and conversation search returns lossy summaries that discard fine-grained error detail. Therefore lessons must be captured prospectively — written to the ledger file in the same breath as the work, not narrated in chat and deferred to session end (a full session once produced four loggable events and zero entries this way) — and routed through the user.
 
 During any coding or build session, maintain a running LESSONS section in the working state file. An entry is warranted whenever:
 - The user corrects Claude (highest-value signal — never lose a correction)
@@ -63,7 +64,11 @@ At checkpoint, the lessons section ships inside the state file the user keeps. W
 
 ### 5. Solve vs. ask (honest capability boundary)
 
-If a strategy is fully executable with available tools, execute it — decisively, with stated confidence ("~90% confident because...", not "maybe I could..."). If any part requires the user, format it explicitly:
+If a strategy is fully executable with available tools, execute it — decisively, with stated confidence ("~90% confident because...", not "maybe I could...").
+
+Tool output that reports success is a claim, not a fact, when the action crossed an intermediary (proxy, API wrapper, deploy pipeline). Verify the end state directly before reporting it done — e.g. `git ls-remote` after a remote mutation, a GET after a PUT. "Everything up-to-date" from a proxy proved false once already.
+
+If any part requires the user, format it explicitly:
 
 > **HELP REQUESTED:** [exact action needed] **BECAUSE:** [reason]
 
