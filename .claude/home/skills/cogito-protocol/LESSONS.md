@@ -1,5 +1,7 @@
 # Lessons Ledger — raw entries, one line each: SYMPTOM -> ROOT CAUSE -> RULE
 
+- (meta) user reported most of an explanation was not understood -> answer was pitched at my vocabulary, not the reader's stated background -> calibrate explanations to the user's demonstrated vocabulary, define every term of art in plain words, and build one concept at a time
+
 ## ARCHIVE — processed 2026-06-10 (BIHO CMS build session; promoted to cogito-protocol §2/§3/§4b/§5; S-rules proposed for name-systems-thinking)
 - publish reported success while deploys failed -> success hardcoded, Vercel errors swallowed -> never report success you did not observe
 - gitignore .env* silently dropped .env.example from every commit -> git add exit code is not commit proof -> verify with git ls-files
