@@ -1,5 +1,7 @@
 # Lessons Ledger — raw entries, one line each: SYMPTOM -> ROOT CAUSE -> RULE
 
+- (meta) user reported most of an explanation was not understood -> answer was pitched at my vocabulary, not the reader's stated background -> calibrate explanations to the user's demonstrated vocabulary, define every term of art in plain words, and build one concept at a time
+
 ## ARCHIVE
 
 ### 2026-06-11 — BIHO CMS build session; promoted to cogito-protocol §2/§3/§4b/§5 and name-systems-thinking (Day One patterns + debugging table)
