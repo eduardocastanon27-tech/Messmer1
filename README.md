@@ -29,10 +29,20 @@ setup already in place.
 
 Remote Claude Code sessions run in ephemeral containers: the home directory
 (and with it `~/.claude`) is wiped between sessions, while the repo is cloned
-fresh. The SessionStart hook copies `.claude/home/` back into `~/.claude` at
-startup so personal skills and instructions survive:
+fresh. The SessionStart hook restores `~/.claude` at startup so personal
+skills and instructions survive. It prefers the freshest source available:
 
-- `SKILL.md` is **always overwritten** — the repo copy is the source of truth.
+1. **Live:** in any repo other than Messmer1 itself, it shallow-clones this
+   public template over the network and seeds from the clone's
+   `.claude/home/` — so skill updates made here reach every project on its
+   next session start, automatically.
+2. **Fallback:** if the clone fails (offline container, network policy blocks
+   github.com), it seeds from the snapshot checked into the repo's own
+   `.claude/home/`.
+
+Seeding rules either way:
+
+- `SKILL.md` files are **always overwritten** — the template is the source of truth.
 - `CLAUDE.md` and `LESSONS.md` are **only seeded if missing**, so anything
   appended during a session survives a resume within the same container.
 
@@ -41,12 +51,14 @@ local machine's `~/.claude`.
 
 ## Keeping it current
 
-Template copies are snapshots — repos created from this template won't pick
-up later changes automatically. When the skill or lessons evolve:
+Because of the live-update hook, there is only one canonical copy to edit:
 
-1. Edit the files under `.claude/home/` **in this repo** (the canonical copy).
-2. For active projects that should get the update, copy the changed files
-   into that repo's `.claude/home/` and commit.
+1. Edit the files under `.claude/home/` **in this repo** and merge to `main`.
+   Every repo carrying the hook picks the change up at its next session start.
+2. The checked-in `.claude/home/` snapshots in other repos only matter as the
+   offline fallback. Refresh them opportunistically ("Pull the latest
+   .claude/home from Messmer1 into this repo") — staleness there only bites
+   when the network path is also blocked.
 
 ## Command cheat sheet
 
@@ -108,7 +120,7 @@ Then open a PR and merge.
 
 Things to say to Claude Code instead of running commands yourself:
 
-- **"Copy the .claude setup from my public Messmer1 repo into this repo, commit, and push."** — retrofits cogito into any old repo.
+- **"Copy the .claude setup (hooks, settings, home snapshot) from my public Messmer1 repo at github.com/eduardocastanon27-tech/Messmer1 into this repo, make the hook executable, commit, and push."** — the one-sentence retrofit for any old repo; after that, its sessions live-update from the template.
 - **"Create a branch called X for this work and open a PR when you're done."** — full branch + PR flow.
 - **"Merge PR #N and delete the branch."** — cleanup after review.
 - **"Watch this PR and fix anything that comes up."** — Claude subscribes to PR activity and handles review comments / CI failures.

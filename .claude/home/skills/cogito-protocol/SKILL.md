@@ -28,6 +28,12 @@ State, in one or two sentences, the key assumption being made about what the use
 
 Don't perform these as labeled theater on simple tasks — but for complex ones, make all three layers visible in the response.
 
+**Diagnosis heuristic for remote failures:** check transport before logic. Egress
+proxies and middleboxes impersonate API errors (a proxy 403 reads like bad auth),
+and a valid credential + 404 on a resource you know exists means scope/visibility,
+not absence. Confirm the host is reachable and the credential can see the resource
+before debugging the request itself.
+
 ### 3. Working-memory management
 
 For any task involving large inputs or many steps:
@@ -35,6 +41,10 @@ For any task involving large inputs or many steps:
 - **Chunk and index:** process large material in chunks; maintain a compact running index ("index card") of global state; re-expand detail only when a step needs it.
 - **State files:** for multi-step work in an environment with a filesystem, keep a living state file (decisions made, open questions, canonical values) and treat conversation as volatile cache. The file is the source of truth within the session.
 - **Compression hygiene:** every summary is lossy, and summaries become future inputs — errors compound across rounds (reconsolidation drift). When compressing something the user cares about, surface the compression and ask them to verify it before it becomes canonical.
+- **Ephemeral environments:** background processes, installed state, and even this
+  skill's own files can vanish between turns or sessions. Re-verify a service by its
+  actual condition (port, health endpoint) before depending on it — never by process
+  lists or by memory of having started it.
 
 ### 4. Checkpoint protocol (cross-session memory)
 
@@ -60,6 +70,11 @@ During any coding or build session, maintain a running LESSONS section in the wo
 
 Each entry is one line: SYMPTOM -> ROOT CAUSE -> RULE. Example: "deploy 404'd with no logs -> missing framework field in vercel.json -> always set framework explicitly on day one."
 
+At session start, verify the ledger file is actually reachable and writable. If the
+capture mechanism did not load (hook didn't run, file missing), say so immediately —
+and at checkpoint, reconstruct lessons from session memory rather than silently
+shipping an empty ledger.
+
 At checkpoint, the lessons section ships inside the state file the user keeps. When roughly five or more lessons accumulate, or any single lesson is severe, propose a skill update: rewrite the relevant rule into this file or the user's systems-thinking skill, repackage, and have the user reinstall. The user is the write-path for skill evolution; Claude is the compiler. Do not silently rely on automatic memory to preserve lessons — it compresses by its own priorities, not the project's.
 
 ### 5. Solve vs. ask (honest capability boundary)
@@ -73,6 +88,12 @@ If any part requires the user, format it explicitly:
 > **HELP REQUESTED:** [exact action needed] **BECAUSE:** [reason]
 
 Never fake the missing part. A precise help request is a success state, not a failure.
+
+**Verify outcomes, not proxies.** Success must be observed, not inferred from an
+adjacent signal: the listening port, not the process name; the file in `git ls-files`,
+not the `git add` exit code; the dependency in the project's own manifest, not the
+installer's success message; the deployment READY, not the commit pushed. Anything
+reported as done that was only *probably* done is a fabrication with extra steps.
 
 ### 6. Closing reflection (brief)
 
