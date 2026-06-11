@@ -2,7 +2,7 @@
 
 ## ARCHIVE
 
-### 2026-06-11 — BIHO CMS build session; promoted to cogito-protocol §2/§3/§4b/§5, proposed for name-systems-thinking
+### 2026-06-11 — BIHO CMS build session; promoted to cogito-protocol §2/§3/§4b/§5 and name-systems-thinking (Day One patterns + debugging table)
 - publish reported success while deploys failed -> success hardcoded, Vercel errors swallowed -> never report success you did not observe
 - gitignore .env* silently dropped .env.example from every commit -> git add exit code is not commit proof -> verify with git ls-files
 - npm install landed dep in parent dir; local builds passed, clean build failed -> Node resolves upward, masking the miss -> verify dep in the project's own package.json + clean-room build before shipping

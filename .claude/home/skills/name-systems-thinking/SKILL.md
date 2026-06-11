@@ -85,7 +85,7 @@ When diagnosing a bug, name the layer before proposing a fix:
 | Page returns 404 / blank | Serve/Adapter | Framework config, deployment config |
 | Wrong value rendered | Data | Constants file, props passed |
 | Visual wrong but value correct | Token/CSS | Token file, Tailwind class, specificity |
-| Works locally, broken in prod | Environment | Env vars, build-time vs runtime |
+| Works locally, broken in prod | Environment | Env vars, build-time vs runtime — `NEXT_PUBLIC_*`-style vars bake in at build, so an env change exists only once a build can see it (redeploy after adding) |
 
 Never apply a fix at layer N+1 when the bug is at layer N.
 
@@ -104,6 +104,14 @@ These prevent entire classes of problems. Create them before writing features:
 **`vercel.json` / deployment config** — set `"framework"` explicitly. Missing framework config causes CDN-level failures that produce zero runtime logs — the hardest class of bug to diagnose.
 
 **Repo bootstrap order** — in an empty GitHub repo, push `main` with a root commit before any work branch: the first branch pushed becomes the default branch (set by the event, not by repo settings), and PRs are impossible until a base branch exists. When host state looks wrong, check what *is* (`git ls-remote`, the settings page), not what was configured.
+
+**Server-side authorization only** — anything enforced in client JS ships its secret in the bundle; a client-side gate is UX decoration, never security. The server check is the boundary.
+
+**Visible error surfaces** — every catch block must surface somewhere the user or operator can see (UI state, toast, log). An error path with no surface produces "failed showing nothing", the slowest class of bug to even notice.
+
+**Round-trip real data through the real store early** — datastores have constraints invisible to the type system (e.g., Mongo rejects dotted field names). Insert representative real data on day one; store freeform content blobs as JSON strings rather than nested keys.
+
+**Never cache failed initialization** — a memoized connect/init promise that rejected poisons every later request until restart. Cache only successes; let failures retry.
 
 ---
 
