@@ -16,8 +16,11 @@ PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 HOME_SEED="$PROJECT_DIR/.claude/home"
 if [ -d "$HOME_SEED" ]; then
   echo "==> Restoring ~/.claude from .claude/home/..." >&2
-  mkdir -p "$HOME/.claude/skills/cogito-protocol"
-  cp "$HOME_SEED/skills/cogito-protocol/SKILL.md" "$HOME/.claude/skills/cogito-protocol/SKILL.md"
+  for skill_dir in "$HOME_SEED"/skills/*/; do
+    name=$(basename "$skill_dir")
+    mkdir -p "$HOME/.claude/skills/$name"
+    cp "$skill_dir/SKILL.md" "$HOME/.claude/skills/$name/SKILL.md"
+  done
   [ -f "$HOME/.claude/CLAUDE.md" ] || cp "$HOME_SEED/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
   [ -f "$HOME/.claude/skills/cogito-protocol/LESSONS.md" ] || cp "$HOME_SEED/skills/cogito-protocol/LESSONS.md" "$HOME/.claude/skills/cogito-protocol/LESSONS.md"
 fi

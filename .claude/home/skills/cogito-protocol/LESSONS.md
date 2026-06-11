@@ -1,9 +1,10 @@
 # Lessons Ledger — raw entries, one line each: SYMPTOM -> ROOT CAUSE -> RULE
 
-- "Can't delete the default branch" error on a throwaway work branch -> the first branch pushed to an empty GitHub repo becomes its default, regardless of configured default name -> when seeding an empty repo, establish `main` first (or switch default immediately) before pushing work branches. [pending: systems-thinking skill]
-- Could not open the requested PR -> empty repo had no base branch, and PRs need a base sharing history with the head -> in a fresh repo, create a root commit on `main` and build branches on top of it before promising PRs. [pending: systems-thinking skill]
-
 ## ARCHIVE
+
+### 2026-06-11 — folded into name-systems-thinking SKILL.md
+- "Can't delete the default branch" error on a throwaway work branch -> the first branch pushed to an empty GitHub repo becomes its default, regardless of configured default name -> when seeding an empty repo, establish `main` first (or switch default immediately) before pushing work branches. (→ Day One patterns: repo bootstrap order)
+- Could not open the requested PR -> empty repo had no base branch, and PRs need a base sharing history with the head -> in a fresh repo, create a root commit on `main` and build branches on top of it before promising PRs. (→ Day One patterns: repo bootstrap order)
 
 ### 2026-06-10 — folded into cogito-protocol SKILL.md
 - git push --delete reported "Everything up-to-date" but the remote branch survived -> the session's git proxy silently drops ref deletions -> verify remote mutations with `git ls-remote`, never trust push output across a proxy. (→ §5 Solve vs. ask)
