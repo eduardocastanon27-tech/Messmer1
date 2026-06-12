@@ -1,6 +1,11 @@
 # Lessons Ledger — raw entries, one line each: SYMPTOM -> ROOT CAUSE -> RULE
-
+- React inputs lost focus on every keystroke (caught in review before shipping) -> helper component was defined inside the parent component, so its type identity changed each render and React remounted the subtree -> define components at module level; pass closures as props
+- sub-agent calls failed mid-task ("session limit") -> agent quota is a shared external resource that can vanish between planning and execution -> have a do-it-yourself fallback for any delegated step
+- Health panel showed storage green while uploads failed -> the check probed list() (allowed on private stores) instead of the real public put() -> a health check must perform the exact operation the feature performs, not an adjacent one
 - (meta) user reported most of an explanation was not understood -> answer was pitched at my vocabulary, not the reader's stated background -> calibrate explanations to the user's demonstrated vocabulary, define every term of art in plain words, and build one concept at a time
+- owner set hover colors equal to base in the editor -> exposing derived values as independent knobs invites inconsistent state -> derive dependent values (color-mix) instead of exposing them as choices
+- deploy log showed a scary "deprecated" warning -> transitive dep of the legacy code path; a warning is not an error -> trace provenance in the lockfile before reacting
+- UI showed a phantom 50-minute "running timer"; later a command hung forever -> background tasks left uncollected, and a stray `cat` with no input read stdin indefinitely -> collect or kill every background task before going idle; never leave a command that can wait on input
 
 ## ARCHIVE — processed 2026-06-10 (BIHO CMS build session; promoted to cogito-protocol §2/§3/§4b/§5; S-rules proposed for name-systems-thinking)
 - publish reported success while deploys failed -> success hardcoded, Vercel errors swallowed -> never report success you did not observe
